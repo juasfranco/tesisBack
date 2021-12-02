@@ -15,11 +15,10 @@ namespace EhealthApi.Logic
 
         public async Task<string> Upload(FileModel model)
         {
-            string imgUrl = string.Empty;
             var blobContainer = _blobServiceClient.GetBlobContainerClient("uploaded-images");
             var blobClient = blobContainer.GetBlobClient(model.ImageFile.FileName);
             await blobClient.UploadAsync(model.ImageFile.OpenReadStream(),overwrite: true);
-            imgUrl = blobClient.Uri.ToString();
+            string imgUrl = blobClient.Uri.ToString();
 
             return imgUrl;
         }
