@@ -24,6 +24,7 @@ namespace EhealthApi
 {
     public class Startup
     {
+        private readonly string _MyCors = "MyCors";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -40,6 +41,15 @@ namespace EhealthApi
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "EhealthApi", Version = "v1" });
             });
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: _MyCors, builder =>
+                {
+                    builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+                });
+            });
+
             services.AddScoped<UserService>();
             services.AddSingleton<IDatabaseSettings>(db => db.GetRequiredService<IOptions<DatabaseSettings>>().Value);
 
@@ -87,6 +97,7 @@ namespace EhealthApi
             app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseRouting();
+            app.UseCors(_MyCors);
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
